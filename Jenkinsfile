@@ -18,16 +18,17 @@ pipeline {
             }
         }
 
-        stage('Clone Repository') {
-            steps {
-                script {
-                    sh """
-                    sudo git clone git@github.com:Suraj0009/Resource-monitoring.py-with-CI-CD.git ${APP_DIR}
-                    sudo chown -R root:root ${APP_DIR}
-                    """
-                }
-            }
+       stage('Clone Repository') {
+    steps {
+        script {
+            sh """
+            sudo rm -rf /var/www/resource-monitor  # Ensures old files are removed
+            sudo git clone git@github.com:Suraj0009/Resource-monitoring.py-with-CI-CD.git /var/www/resource-monitor
+            sudo chown -R root:root /var/www/resource-monitor
+            """
         }
+    }
+}
 
         stage('Setup Virtual Environment & Install Dependencies') {
             steps {
