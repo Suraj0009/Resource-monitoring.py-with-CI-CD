@@ -6,25 +6,36 @@ pipeline {
         APP_DIR = "/var/www/resource-monitor"
     }
 
-    
-stage('Clone Repository') {
-    steps {
-        script {
-            sh """
-            sudo rm -rf /var/www/resource-monitor || true
-            git clone git@github.com:Suraj0009/Resource-monitoring.py-with-CI-CD.git /var/www/resource-monitor
-            """
+    stages {
+        stage('Prepare Workspace') {
+            steps {
+                script {
+                    sh """
+                    sudo mkdir -p ${APP_DIR}
+                    sudo find ${APP_DIR} -mindepth 1 -delete
+                    """
+                }
+            }
         }
-    }
-}
 
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sh """
+                    sudo git clone git@github.com:Suraj0009/Resource-monitoring.py-with-CI-CD.git ${APP_DIR}
+                    sudo chown -R root:root ${APP_DIR}
+                    """
+                }
+            }
+        }
 
-        stage('Install Dependencies') {
+        stage('Setup Virtual Environment & Install Dependencies') {
             steps {
                 script {
                     sh """
                     python3 -m venv ${VENV_PATH}
                     source ${VENV_PATH}/bin/activate
+                    pip install --upgrade pip
                     pip install -r ${APP_DIR}/requirements.txt
                     """
                 }
@@ -53,3 +64,4 @@ stage('Clone Repository') {
         }
     }
 }
+
