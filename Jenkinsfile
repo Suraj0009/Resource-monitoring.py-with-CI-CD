@@ -33,6 +33,9 @@ pipeline {
             steps {
                 script {
                     sh """
+                    sudo apt update
+                    sudo apt install -y python3-venv
+
                     python3 -m venv ${VENV_PATH}
                     source ${VENV_PATH}/bin/activate
                     pip install --upgrade pip
@@ -64,4 +67,3 @@ pipeline {
         }
     }
 }
-
