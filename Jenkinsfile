@@ -43,8 +43,10 @@ pipeline {
                     sudo rm -rf ${VENV_PATH}  # Ensures old venv is deleted
                     python3 -m venv ${VENV_PATH}
                     . ${VENV_PATH}/bin/activate
+
                     pip install --upgrade pip
                     pip install -r ${APP_DIR}/requirements.txt
+                    pip install pytest  # Fix: Ensure pytest is installed
                     """
                 }
             }
