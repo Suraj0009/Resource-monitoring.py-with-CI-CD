@@ -6,14 +6,18 @@ pipeline {
         APP_DIR = "/var/www/resource-monitor"
     }
 
-    stages {
-        stage('Clone Repository') {
-            steps {
-                script {
-                    sh "rm -rf ${APP_DIR} && git clone git@github.com:Suraj0009/Resource-monitoring.py-with-CI-CD.git ${APP_DIR}"
-                }
-            }
+    
+stage('Clone Repository') {
+    steps {
+        script {
+            sh """
+            sudo rm -rf /var/www/resource-monitor || true
+            git clone git@github.com:Suraj0009/Resource-monitoring.py-with-CI-CD.git /var/www/resource-monitor
+            """
         }
+    }
+}
+
 
         stage('Install Dependencies') {
             steps {
