@@ -37,7 +37,7 @@ pipeline {
                     sudo apt install -y python3-venv
 
                     python3 -m venv ${VENV_PATH}
-                    source ${VENV_PATH}/bin/activate
+                    . ${VENV_PATH}/bin/activate  # Fix: Use '.' instead of 'source'
                     pip install --upgrade pip
                     pip install -r ${APP_DIR}/requirements.txt
                     """
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    source ${VENV_PATH}/bin/activate
+                    . ${VENV_PATH}/bin/activate  # Fix: Use '.' instead of 'source'
                     pytest ${APP_DIR}/tests/
                     """
                 }
