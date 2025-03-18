@@ -4,6 +4,9 @@ pipeline {
     environment {
         VENV_PATH = "/var/www/resource-monitor/venv"
         APP_DIR = "/var/www/resource-monitor"
+        IMAGE_NAME = "resource-monitor-app"
+        CONTAINER_NAME = "resource-monitor"
+        PORT = "5000"
     }
 
     stages {
@@ -40,13 +43,13 @@ pipeline {
                     sudo apt update
                     sudo apt install -y python3-venv
 
-                    sudo rm -rf ${VENV_PATH}  # Ensures old venv is deleted
+                    sudo rm -rf ${VENV_PATH}
                     python3 -m venv ${VENV_PATH}
                     . ${VENV_PATH}/bin/activate
 
                     pip install --upgrade pip
                     pip install -r ${APP_DIR}/requirements.txt
-                    pip install pytest  # Fix: Ensure pytest is installed
+                    pip install pytest
                     """
                 }
             }
@@ -63,11 +66,32 @@ pipeline {
             }
         }
 
-        stage('Deploy Application') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     sh """
-                    sudo systemctl restart resource-monitor
+                    sudo docker build -t ${IMAGE_NAME} ${APP_DIR}
+                    """
+                }
+            }
+        }
+
+        stage('Stop and Remove Old Container') {
+            steps {
+                script {
+                    sh """
+                    sudo docker stop ${CONTAINER_NAME} || true
+                    sudo docker rm ${CONTAINER_NAME} || true
+                    """
+                }
+            }
+        }
+
+        stage('Run New Docker Container') {
+            steps {
+                script {
+                    sh """
+                    sudo docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} ${IMAGE_NAME}
                     """
                 }
             }
