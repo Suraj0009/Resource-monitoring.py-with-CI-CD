@@ -6,7 +6,7 @@ pipeline {
         APP_DIR = "/var/www/resource-monitor"
         IMAGE_NAME = "resource-monitor-app"
         CONTAINER_NAME = "resource-monitor"
-        PORT = "5000"
+        PORT = "8090"
     }
 
     stages {
